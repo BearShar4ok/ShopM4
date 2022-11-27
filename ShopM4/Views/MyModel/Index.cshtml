@@ -1,0 +1,31 @@
+﻿@model IEnumerable<MyModel>
+@{
+    ViewData["Title"] = "MyModel";
+}
+<h1>Hello MyModel Category</h1>
+
+<p>
+    <a class="btn btn-primary" asp-controller="MyModel" asp-action="Create">Create Category</a>
+</p>
+@if (Model.Count() > 0)
+{
+    <table class="table table-bordered table-striped" border="1" style="width:100%">
+        <thead>
+            <tr>
+                <th>Category Name</th>
+                <th>Number</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                    <td width="30%">@item.Name</td>
+                    <td width="20%">@item.Number</td>
+                    <td width="50%"></td>
+            </tr>
+            }
+      </tbody>
+    </table>
+}

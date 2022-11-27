@@ -1,0 +1,52 @@
+﻿@model ShopM4.Models.ViewModels.ProductViewModel
+
+<h1>@(@Model.Product.Id==0?"Create":"Edit") Product</h1>
+
+<form method="post" enctype="multipart/form-data">
+
+   
+
+    <input asp-for="Product.Id" hidden/>
+    <p> 
+        <label asp-for="Product.Name"></label>
+        <input asp-for="Product.Name" class="form-control"/>
+        <span asp-validation-for="Product.Name" class="text-danger"></span>
+    </p>
+
+    <p>
+        <label asp-for="Product.Price"></label>
+        <input asp-for="Product.Price" class="form-control"/>
+        <span asp-validation-for="Product.Price" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="Product.Description"></label>
+        <input asp-for="Product.Description" class="form-control"/>
+    </p>
+     <p>
+        <label asp-for="Product.Image"></label>
+        <input type="file" name="files" multiple class="form-control"/>
+    </p>
+    <p>
+        <label asp-for="Product.CategoryId"></label>
+        <!-- <select class="form-control" asp-for="CategoryId" asp-items="ViewBag.CategoryList">      -->
+        <select class="form-control" asp-for="Product.CategoryId" asp-items="@Model.CategoriesList" >
+            <option disabled selected>Выберите категорию</option>
+        </select>
+        <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
+    </p>
+    <p>
+        <input type="submit" class="btn-success btn" value="@(@Model.Product.Id==0?"Create":"Update")"/>
+        <a class="btn btn-primary" asp-controller="Product" asp-action="Index">Back</a>
+    </p>
+    <p>
+        <div asp-validation-summary="All">
+
+        </div>
+    </p>
+
+</form>
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+    }
+}
