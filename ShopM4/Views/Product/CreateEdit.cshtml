@@ -1,6 +1,6 @@
 ﻿@model ShopM4.Models.ViewModels.ProductViewModel
 
-<h1>@(@Model.Product.Id==0?"Create":"Edit") Product</h1>
+<h1>@(Model.Product.Id==0?"Create":"Edit") Product</h1>
 
 <form method="post" enctype="multipart/form-data">
 
@@ -20,11 +20,15 @@
     </p>
     <p>
         <label asp-for="Product.Description"></label>
-        <input asp-for="Product.Description" class="form-control"/>
+        <!--<input asp-for="Product.Description" class="form-control"/>-->
+        <textarea asp-for="Product.Description" class="form-control summernote">
+
+        </textarea>
+        <span asp-validation-for="Product.Description" class="text-danger"></span>
     </p>
      <p>
         <label asp-for="Product.Image"></label>
-        <input type="file" name="files" multiple class="form-control"/>
+        <input type="file" name="files" multiple id="uploadedImage" class="form-control"/>
     </p>
     <p>
         <label asp-for="Product.CategoryId"></label>
@@ -35,7 +39,7 @@
         <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
     </p>
     <p>
-        <input type="submit" class="btn-success btn" value="@(@Model.Product.Id==0?"Create":"Update")"/>
+        <input type="submit" class="btn-success btn" value="@(@Model.Product.Id==0?"Create":"Update")" onclick="@(@Model.Product.Id==0?"input()":"")"/>
         <a class="btn btn-primary" asp-controller="Product" asp-action="Index">Back</a>
     </p>
     <p>
@@ -49,4 +53,22 @@
     @{
         <partial name="_ValidationScriptsPartial"/>
     }
+            <script>
+            $(document).ready(function() {
+                $('.summernote').summernote({
+                    height: 200
+                });
+            });
+            function input(){
+                if (document.getElementById("uploadedImage").value == "")
+                {
+                    Swal.fire(
+                        'Error!',
+                        'Upload picture!!!',
+                        'error'
+                    )
+                }
+            }
+
+        </script>
 }

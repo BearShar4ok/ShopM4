@@ -9,9 +9,11 @@ namespace ShopM4.Controllers
     public class ProductController : Controller
     {
         private ApplicationDbContext db;
-        public ProductController(ApplicationDbContext db)
+        private IWebHostEnvironment webHostEnvironment;
+        public ProductController(ApplicationDbContext db, IWebHostEnvironment webHostEnvironment)
         {
             this.db = db;
+            this.webHostEnvironment = webHostEnvironment;
         }
         public IActionResult Index()
         {
@@ -19,7 +21,7 @@ namespace ShopM4.Controllers
             //links to categories
             foreach (var item in objList)
             {
-                item.Category = db.Category.FirstOrDefault(x => x.Id == item.CategoryId);
+                //item.Category = db.Category.FirstOrDefault(x => x.Id == item.CategoryId);
             }
             return View(objList);
         }
@@ -59,6 +61,32 @@ namespace ShopM4.Controllers
                 return View(productViewModel);
             }
 
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateEdit(ProductViewModel productViewModel) 
+        {
+            var files = HttpContext.Request.Form.Files;
+            string wwRoot = webHostEnvironment.WebRootPath;
+            if(productViewModel.Product.Id == 0)
+            {
+                string upload = wwRoot + PathManager.ImageProductPath;
+                string imageName = Guid.NewGuid().ToString();
+                string ext = Path.GetExtension(files[0].FileName);
+                string path = upload+imageName+ext;
+                using( var filestream = new FileStream(path,FileMode.Create))
+                {
+                    files[0].CopyTo(filestream);
+                }
+                productViewModel.Product.Image = imageName + ext;
+                db.Product.Add(productViewModel.Product);
+                db.SaveChanges();
+            }
+            else
+            {
+
+            }
+            return RedirectToAction("Index");
         }
     }
 }
