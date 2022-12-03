@@ -33,5 +33,71 @@ namespace ShopM4.Controllers
 
             return RedirectToAction("Index");
         }
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            var myModel = db.MyModel.Find(id);
+
+            if (myModel == null)
+            {
+                return NotFound();
+            }
+            return View(myModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(MyModel myModel)
+        {
+            if (ModelState.IsValid)
+            {
+                db.MyModel.Update(myModel);
+                db.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+
+            return View(myModel);
+        }
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            var myModel = db.MyModel.Find(id);
+
+            if (myModel == null)
+            {
+                return NotFound();
+            }
+            return View(myModel);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeletePost(int? id)
+        {
+            if (id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            var myModel = db.MyModel.Find(id);
+
+            if (myModel == null)
+            {
+                return NotFound();
+            }
+            db.MyModel.Remove(myModel);
+            db.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
     }
 }

@@ -1,8 +1,10 @@
 ﻿
 @model MyModel
-<h1>Add Mymodel Category</h1>
+<h1>Edit MyModel</h1>
 
 <form method="post">
+
+    <input asp-for="Id" hidden/>
     <p> 
         <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control"/>
@@ -15,8 +17,13 @@
         <span asp-validation-for="Number" class="text-danger"></span>
     </p>
     <p>
-        <input type="submit" class="btn-success btn" value="Create MyModel"/>
-        <a class="btn btn-primary" asp-controller="Category" asp-action="Index">Back</a>
+        <input type="submit" class="btn-success btn" value="Update"/>
+        <a class="btn btn-primary" asp-controller="MyModel" asp-action="Index">Back</a>
+    </p>
+    <p>
+        <div asp-validation-summary="All">
+
+        </div>
     </p>
 
 </form>
