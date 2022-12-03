@@ -1,0 +1,69 @@
+﻿@model ShopM4.Models.Product
+
+@{
+    var title = "Delete Product";
+}
+
+<h1>@title</h1>
+
+<form method="post" enctype="multipart/form-data" asp-action="DeletePost">
+
+    <!-- Передача скрытых данных -->
+    <input asp-for="Id" hidden />
+
+    <p>
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" disabled />
+    </p>
+
+    <p>
+        <label asp-for="Price"></label>
+        <input asp-for="Price" class="form-control" disabled />
+    </p>
+
+    <p>
+        <label asp-for="Description"></label>
+        <!--<input asp-for="Product.Description" class="form-control" />-->
+        <textarea asp-for="Description" class="form-control " disabled></textarea>
+    </p>
+
+    <p>
+        <label asp-for="CategoryId"></label>
+        <input asp-for="Category.Name" class="form-control" disabled />
+    </p>
+    <p>
+        <label asp-for="MyModelId"></label>
+        <input asp-for="MyModel.Name" class="form-control" disabled />
+    </p>
+
+    <p>
+        <input type="submit" class="btn btn-danger" value="Delete" />
+        <a class="btn btn-primary" hasp-controller="Product" asp-action="Index">
+            <i class="fa-solid fa-caret-left"></i>
+            Back
+        </a>
+    </p>
+
+    <p>
+        <div asp-validation-summary="All"></div>
+    </p>
+</form>
+
+
+@if (Model.Id != 0)
+{
+        <p>
+            <img src="@PathManager.ImageProductPath@Model.Image" width="150" />
+        </p>
+}
+
+@section Scripts {
+        <script>
+            /* editor */
+            $(document).ready(function () {
+                $('.summernote').summernote({
+                    height: 200
+                });
+            });
+            </script>
+}

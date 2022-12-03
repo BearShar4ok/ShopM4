@@ -18,5 +18,9 @@ namespace ShopM4.Models
         public int CategoryId { get; set; }
         [ForeignKey("CategoryId")]
         public virtual Category Category { get; set; }
+        [Display(Name = "MyModel Id")]
+        public int MyModelId { get; set; }
+        [ForeignKey("MyModelId")]
+        public virtual MyModel MyModel { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿@model ShopM4.Models.ViewModels.ProductViewModel
 
-<h1>@(Model.Product.Id==0?"Create":"Edit") Product</h1>
+<h1>@(Model.Product.Id == 0 ? "Create" : "Edit") Product</h1>
 
 <form method="post" enctype="multipart/form-data">
 
@@ -20,7 +20,7 @@
     </p>
     <p>
         <label asp-for="Product.Description"></label>
-        <!--<input asp-for="Product.Description" class="form-control"/>-->
+        <!--<input asp-for="Description" class="form-control"/>-->
         <textarea asp-for="Product.Description" class="form-control summernote">
 
         </textarea>
@@ -38,6 +38,16 @@
         </select>
         <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
     </p>
+
+    <p>
+        <label asp-for="Product.MyModelId"></label>
+        <!-- <select class="form-control" asp-for="CategoryId" asp-items="ViewBag.CategoryList">      -->
+        <select class="form-control" asp-for="Product.MyModelId" asp-items="@Model.MyModelList" >
+            <option disabled selected>Выберите модель</option>
+        </select>
+        <span asp-validation-for="Product.MyModelId" class="text-danger"></span>
+    </p>
+
     <p>
         <input type="submit" class="btn-success btn" value="@(@Model.Product.Id==0?"Create":"Update")" onclick="@(@Model.Product.Id==0?"input()":"")"/>
         <a class="btn btn-primary" asp-controller="Product" asp-action="Index">Back</a>
@@ -49,6 +59,12 @@
     </p>
 
 </form>
+@if (Model.Product.Image != null)
+{
+<p>
+        <img src="@PathManager.ImageProductPath@Model.Product.Image" width="300"/>
+</p>
+}
 @section Scripts{
     @{
         <partial name="_ValidationScriptsPartial"/>

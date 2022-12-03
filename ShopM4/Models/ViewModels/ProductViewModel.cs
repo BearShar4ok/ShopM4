@@ -9,5 +9,9 @@ namespace ShopM4.Models.ViewModels
         {
             get; set;
         }
+        public IEnumerable<SelectListItem> MyModelList
+        {
+            get; set;
+        }
     }
 }
