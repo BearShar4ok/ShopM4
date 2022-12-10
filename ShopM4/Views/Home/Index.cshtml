@@ -1,8 +1,44 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model ShopM4.Models.ViewModels.HomeViewModel
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container" id="box">
+    <div>
+        <button class="btn filter-button" data-filter="all">All</button>
+        @foreach(var item in Model.Categories)
+        {
+            <button class="btn filter-button" data-filter="@item.Name.Replace(' ','_')" style="background-color: gray">@item.Name</button>
+        }
+    </div>
+    <div>
+        @foreach(var prod in Model.Products)
+        {
+            <partial name="_ProductCard" model="prod" style="display:flow"/>
+        }
+    </div>
 </div>
+@section Scripts{
+
+<script>
+        //var all = document.getElementById("box").childNodes;
+        //for(var a in all)
+        //{
+        //       
+        //}
+        //console.log(all);
+        $(document).ready(function(){
+            $('.filter-button').click(function(){
+                var value = $(this).attr('data-filter');
+                if(value == "all")
+                {
+                    $('.filter').show('1000');
+                }
+                else
+                {
+                    $(".filter").not('.'+value).hide('3000');
+                    $('.filter').filter('.'+value).show('3000');
+                }
+                
+                
+            });
+        });
+</script>
+}

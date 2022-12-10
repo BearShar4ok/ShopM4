@@ -27,6 +27,11 @@
         <span asp-validation-for="Product.Description" class="text-danger"></span>
     </p>
      <p>
+        <label asp-for="Product.ShortDescription"></label>
+        <input asp-for="Product.ShortDescription" class="form-control"/>
+        <span asp-validation-for="Product.ShortDescription" class="text-danger"></span>
+    </p>
+     <p>
         <label asp-for="Product.Image"></label>
         <input type="file" name="files" multiple id="uploadedImage" class="form-control"/>
     </p>
@@ -42,7 +47,7 @@
     <p>
         <label asp-for="Product.MyModelId"></label>
         <!-- <select class="form-control" asp-for="CategoryId" asp-items="ViewBag.CategoryList">      -->
-        <select class="form-control" asp-for="Product.MyModelId" asp-items="@Model.MyModelList" >
+        <select class="form-control" asp-for="Product.MyModelId" asp-items="@Model.MyModelList">
             <option disabled selected>Выберите модель</option>
         </select>
         <span asp-validation-for="Product.MyModelId" class="text-danger"></span>

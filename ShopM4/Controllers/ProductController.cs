@@ -147,9 +147,8 @@ namespace ShopM4.Controllers
                 return NotFound();
             }
             var product = db.Product.Find(id);
-            var files = HttpContext.Request.Form.Files;
-            string wwRoot = webHostEnvironment.WebRootPath;
-            string upload = wwRoot + PathManager.ImageProductPath;
+
+            string upload = webHostEnvironment.WebRootPath + PathManager.ImageProductPath;
 
             var oldFile = upload + product.Image;
 

@@ -10,6 +10,7 @@ namespace ShopM4.Models
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
+        public string ShortDescription { get; set; }
         [Required]
         [Range(0.001, int.MaxValue, ErrorMessage ="More than 1")]
         public double Price { get; set; }
