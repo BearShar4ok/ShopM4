@@ -8,6 +8,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(
     );
 
 // Add services to the container.
+builder.Services.AddHttpContextAccessor();//нужно для работы с сессиями во вью
+
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = "Winter2022";
+    //options.IdleTimeout = TimeSpan.FromSeconds(10);
+}); // добавляем сервис сессий
+
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -37,18 +45,20 @@ app.MapControllerRoute(
 //    return next.Invoke();
 //});
 
-app.Run(x =>
-{
-    // return x.Response.WriteAsync("Hello "+ x.Items["name"]);
-    if (x.Request.Cookies.ContainsKey("name"))
-    {
-        return x.Response.WriteAsync("Ok");
-    }
-    else
-    {
-        x.Response.Cookies.Append("name", "Dany");
-        return x.Response.WriteAsync("No");
-    }
-});
+app.UseSession(); // добавляем сервис сессий
+
+//app.Run(x =>
+//{
+//    // return x.Response.WriteAsync("Hello "+ x.Items["name"]);
+//    if (x.Session.Keys.Contains("name"))
+//    {
+//        return x.Response.WriteAsync(x.Session.GetString("name"));
+//    }
+//    else
+//    {
+//        x.Session.SetString("name", "Danya");
+//        return x.Response.WriteAsync("No");
+//    }
+//});
 
 app.Run();

@@ -37,6 +37,13 @@ namespace ShopM4.Controllers
             return View(detailsViewModel);
         }
 
+        [HttpPost]
+        public IActionResult DetailsPost(int id)
+        {
+            
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();
