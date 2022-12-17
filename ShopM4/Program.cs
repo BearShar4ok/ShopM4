@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ShopM4.Data;
 
@@ -6,6 +7,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"))
     );
+builder.Services.AddDefaultIdentity<IdentityUser>()
+    .AddEntityFrameworkStores<ApplicationDbContext>();
+
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();//нужно для работы с сессиями во вью
@@ -32,6 +36,12 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+
+
+app.UseAuthentication();
+
+
 
 app.UseAuthorization();
 
