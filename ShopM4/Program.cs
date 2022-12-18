@@ -7,18 +7,19 @@ builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"))
     );
-builder.Services.AddDefaultIdentity<IdentityUser>()
+//builder.Services.AddDefaultIdentity<IdentityUser>()
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddDefaultUI().AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
-
-
 // Add services to the container.
-builder.Services.AddHttpContextAccessor();//нужно для работы с сессиями во вью
+builder.Services.AddHttpContextAccessor();//пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅ
 
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = "Winter2022";
     //options.IdleTimeout = TimeSpan.FromSeconds(10);
-}); // добавляем сервис сессий
+}); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
 builder.Services.AddControllersWithViews();
 
@@ -49,13 +50,15 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+
+app.MapRazorPages();
 //app.Use((context, next) =>
 //{
 //    context.Items["name"] = "Danya";
 //    return next.Invoke();
 //});
 
-app.UseSession(); // добавляем сервис сессий
+app.UseSession(); // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
 //app.Run(x =>
 //{
