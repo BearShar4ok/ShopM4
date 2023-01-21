@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using ShopM4.Data;
+using ShopM4.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(
@@ -20,7 +22,7 @@ builder.Services.AddSession(options =>
     options.Cookie.Name = "Winter2022";
     //options.IdleTimeout = TimeSpan.FromSeconds(10);
 }); // ��������� ������ ������
-
+builder.Services.AddTransient<IEmailSender,EmailSender>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
