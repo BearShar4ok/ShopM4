@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShopM4.Data;
 using ShopM4.Models;
+using System.Data;
 using System.Diagnostics;
 
 namespace ShopM4.Controllers
 {
+    [Authorize(Roles = PathManager.AdminRole)]
     public class MyModelController : Controller
     {
         private ApplicationDbContext db;

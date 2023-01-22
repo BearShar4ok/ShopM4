@@ -2,9 +2,9 @@
 {
     public static class PathManager
     {
-        public static string ImageProductPath = @"\images\product\";//{ get; set; }
-        public static string SessionCart = "SessionCart";//{ get; set; }
-        public static string AdminRole = "Admin";//{ get; set; }
-        public static string CustomerRole = "Customer";//{ get; set; }
+        public const string ImageProductPath = @"\images\product\";//{ get; set; }
+        public const string SessionCart = "SessionCart";//{ get; set; }
+        public const string AdminRole = "Admin";//{ get; set; }
+        public const string CustomerRole = "Customer";//{ get; set; }
     }
 }

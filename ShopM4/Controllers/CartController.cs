@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using ShopM4.Models.ViewModels;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace ShopM4.Controllers
 {
@@ -15,10 +16,15 @@ namespace ShopM4.Controllers
         ApplicationDbContext db;
 
         ProductUserViewModel productUserViewModel;
+        IWebHostEnvironment webHostEnvironment;
+        IEmailSender emailSender;
 
-        public CartController(ApplicationDbContext db)
+        public CartController(ApplicationDbContext db, 
+            IWebHostEnvironment webHostEnvironment, IEmailSender emailSender)
         {
             this.db = db;
+            this.webHostEnvironment = webHostEnvironment;
+            this.emailSender = emailSender;
         }
         // GET: /<controller>/
         public IActionResult Index()
@@ -54,7 +60,38 @@ namespace ShopM4.Controllers
 
             return RedirectToAction("Index");
         }
+        public IActionResult InquiryConformation()
+        {
+            HttpContext.Session.Clear();
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult >SummaryPost(ProductUserViewModel productUserViewModel)
+        {
+            var path = webHostEnvironment.WebRootPath + Path.DirectorySeparatorChar.ToString() +
+                 "templates" + Path.DirectorySeparatorChar.ToString() + "Inquiry.html";
+            var subject = "New order";
+            string bodyHtml = "";
+            using(StreamReader r = new StreamReader(path))
+            {
+                bodyHtml = r.ReadToEnd();
+            }
 
+            string textProducts = "";
+            foreach (var item in productUserViewModel.ProductList)
+            {
+                textProducts += $"-Name: {item.Name}, ID: {item.Id}\n";
+            }
+
+           string body= string.Format(bodyHtml, productUserViewModel.ApplicationUser.FullNama,
+                productUserViewModel.ApplicationUser.Email,
+                productUserViewModel.ApplicationUser.PhoneNumber, textProducts);
+
+            await emailSender.SendEmailAsync(productUserViewModel.ApplicationUser.Email, subject, body);
+            //await emailSender.SendEmailAsync(productUserViewModel.ApplicationUser.Email, subject, body);
+
+            return RedirectToAction("InquiryConformation");
+        }
         [HttpPost]
         public IActionResult Summary()
         {
@@ -81,7 +118,7 @@ namespace ShopM4.Controllers
             productUserViewModel = new ProductUserViewModel()
             {
                 ApplicationUser = db.ApplicationUser.FirstOrDefault(x => x.Id == claim.Value),
-                ProductList = productList
+                ProductList = productList.ToList()
             };
 
             return View(productUserViewModel);
