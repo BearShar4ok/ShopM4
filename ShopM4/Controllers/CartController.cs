@@ -1,9 +1,9 @@
-﻿using ShopM4.Data;
-using ShopM4.Models;
-using ShopM4.Utility;
+﻿using ShopM4_DataMigrations.Data;
+using ShopM4_Models;
+using ShopM4_Utility;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using ShopM4.Models.ViewModels;
+using ShopM4_Models.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity.UI.Services;
 

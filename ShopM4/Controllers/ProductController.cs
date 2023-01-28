@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ShopM4.Data;
-using ShopM4.Models;
-using ShopM4.Models.ViewModels;
+using ShopM4_DataMigrations.Data;
+using ShopM4_Models;
+using ShopM4_Models.ViewModels;
+using ShopM4_Utility;
 using System.IO;
 using static System.Net.Mime.MediaTypeNames;
 

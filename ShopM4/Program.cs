@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using ShopM4.Data;
-using ShopM4.Utility;
+using ShopM4_DataMigrations.Data;
+using ShopM4_Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(

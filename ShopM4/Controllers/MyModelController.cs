@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShopM4.Data;
-using ShopM4.Models;
+using ShopM4_DataMigrations.Data;
+using ShopM4_Models;
+using ShopM4_Utility;
 using System.Data;
 using System.Diagnostics;
 
