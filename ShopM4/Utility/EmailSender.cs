@@ -28,7 +28,7 @@ namespace ShopM4.Utility
             };
 
             var emailMessage = new TransactionalEmailBuilder().
-                WithFrom(new SendContact("viosagmir@gmail.com")).
+                WithFrom(new SendContact(PathManager.EmailSender)).
                 WithSubject(subject).
                 WithHtmlPart(htmlMessage).
                 WithTo(new SendContact(email)).
