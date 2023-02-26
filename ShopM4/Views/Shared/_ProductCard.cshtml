@@ -2,7 +2,7 @@
 @model ShopM4_Models.Product
 
 <div class="card filter @Model.Category.Name.Replace(" ","_")" style="display:flex; float:left; width: 18rem;
-                        height:25rem; margin: 5px; border: groove; border-color:peachpuff; border-width:2px;">
+                        height:25rem; margin: 5px 10px 5px 0px; border: groove; border-color:peachpuff; border-width:2px;">
   <img src="@PathManager.ImageProductPath@Model.Image" class="card-img-top" alt="...">
   <div class="card-body">
     <h5 class="card-title">@Model.Name</h5>

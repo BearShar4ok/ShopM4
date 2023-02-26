@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopM4_DataMigrations.Data;
+using ShopM4_DataMigrations.Repository;
+using ShopM4_DataMigrations.Repository.IReporitory;
 using ShopM4_Models;
 using ShopM4_Utility;
 using System.Data;
@@ -11,14 +13,15 @@ namespace ShopM4.Controllers
     [Authorize(Roles = PathManager.AdminRole)]
     public class CategoryController : Controller
     {
-        private ApplicationDbContext db;
-        public CategoryController(ApplicationDbContext db)
+        private IRepositoryCategory repositoryCategory;
+        //private ApplicationDbContext db;
+        public CategoryController(IRepositoryCategory repositoryCategory)
         {
-            this.db = db;
+            this.repositoryCategory = repositoryCategory;
         }
         public IActionResult Index()
         {
-            IEnumerable<Category> categories = db.Category;
+            IEnumerable<Category> categories = repositoryCategory.GetAll();
             return View(categories);
         }
 
@@ -33,8 +36,8 @@ namespace ShopM4.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Category.Add(category);
-                db.SaveChanges();
+                repositoryCategory.Add(category);
+                repositoryCategory.Save();
 
                 return RedirectToAction("Index");
             }
@@ -49,7 +52,7 @@ namespace ShopM4.Controllers
                 return NotFound();
             }
 
-            var category = db.Category.Find(id);
+            var category = repositoryCategory.Find(id.GetValueOrDefault());
 
             if (category == null)
             {
@@ -63,8 +66,8 @@ namespace ShopM4.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Category.Update(category);
-                db.SaveChanges();
+                repositoryCategory.Update(category);
+                repositoryCategory.Save();
 
                 return RedirectToAction("Index");
             }
@@ -80,7 +83,7 @@ namespace ShopM4.Controllers
                 return NotFound();
             }
 
-            var category = db.Category.Find(id);
+            var category = repositoryCategory.Find(id.GetValueOrDefault());
 
             if (category == null)
             {
@@ -97,14 +100,14 @@ namespace ShopM4.Controllers
                 return NotFound();
             }
 
-            var category = db.Category.Find(id);
+            var category = repositoryCategory.Find(id.GetValueOrDefault());
 
             if (category == null)
             {
                 return NotFound();
             }
-            db.Category.Remove(category);
-            db.SaveChanges();
+            repositoryCategory.Remove(category);
+            repositoryCategory.Save();
 
             return RedirectToAction("Index");
         }

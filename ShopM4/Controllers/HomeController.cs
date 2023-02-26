@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShopM4_DataMigrations.Data;
+using ShopM4_DataMigrations.Repository.IReporitory;
 using ShopM4_Models;
 using ShopM4_Models.ViewModels;
 using ShopM4_Utility;
@@ -9,12 +10,16 @@ using System.Diagnostics;
 namespace ShopM4.Controllers
 {
     public class HomeController : Controller
+
     {
         private readonly ILogger<HomeController> _logger;
-        private ApplicationDbContext db;
-        public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
+        private IRepositoryProduct repositoryProduct;
+        private IRepositoryCategory repositoryCategory;
+        public HomeController(ILogger<HomeController> logger,
+            IRepositoryProduct repositoryProduct, IRepositoryCategory repositoryCategory)
         {
-            this.db = db;
+            this.repositoryCategory = repositoryCategory;
+            this.repositoryProduct = repositoryProduct;
             _logger = logger;
         }
 
@@ -22,8 +27,11 @@ namespace ShopM4.Controllers
         {
             HomeViewModel homeViewModel = new HomeViewModel()
             {
-                Products = db.Product,
-                Categories = db.Category
+
+                Products = repositoryProduct.GetAll(
+                    includeProperties: PathManager.NameCategory + "," + PathManager.NameMyModel),
+                Categories = repositoryCategory.GetAll(),
+
             };
             return View(homeViewModel);
         }
@@ -40,7 +48,8 @@ namespace ShopM4.Controllers
 
             DetailsViewModel detailsViewModel = new DetailsViewModel()
             {
-                Product = db.Product.Include(x => x.Category).Include(x => x.MyModel).FirstOrDefault(x => x.Id == id),
+                Product = repositoryProduct.FirstOrDefault(x => x.Id == id,
+                includeProperties: PathManager.NameCategory + "," + PathManager.NameMyModel),
                 IsInCart = false,
             };
 

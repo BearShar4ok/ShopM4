@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopM4_DataMigrations.Data;
+using ShopM4_DataMigrations.Repository.IReporitory;
 using ShopM4_Models;
 using ShopM4_Utility;
 using System.Data;
@@ -11,14 +12,15 @@ namespace ShopM4.Controllers
     [Authorize(Roles = PathManager.AdminRole)]
     public class MyModelController : Controller
     {
-        private ApplicationDbContext db;
-        public MyModelController(ApplicationDbContext db)
+        //private ApplicationDbContext db;
+        private IRepositoryMyModel repositoryMyModel;
+        public MyModelController(IRepositoryMyModel repositoryMyModel)
         {
-            this.db = db;
+            this.repositoryMyModel = repositoryMyModel;
         }
         public IActionResult Index()
         {
-            IEnumerable<MyModel> categories = db.MyModel;
+            IEnumerable<MyModel> categories = repositoryMyModel.GetAll();
             return View(categories);
         }
 
@@ -32,8 +34,8 @@ namespace ShopM4.Controllers
         {
             if (category == null || category.Name == null)
                 return RedirectToAction("Index");
-            db.MyModel.Add(category);
-            db.SaveChanges();
+            repositoryMyModel.Add(category);
+            repositoryMyModel.Save();
 
             return RedirectToAction("Index");
         }
@@ -45,7 +47,8 @@ namespace ShopM4.Controllers
                 return NotFound();
             }
 
-            var myModel = db.MyModel.Find(id);
+            var myModel = repositoryMyModel.Find(id.Value);
+           
 
             if (myModel == null)
             {
@@ -59,8 +62,8 @@ namespace ShopM4.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.MyModel.Update(myModel);
-                db.SaveChanges();
+                repositoryMyModel.Update(myModel);
+                repositoryMyModel.Save();
 
                 return RedirectToAction("Index");
             }
@@ -75,7 +78,7 @@ namespace ShopM4.Controllers
                 return NotFound();
             }
 
-            var myModel = db.MyModel.Find(id);
+            var myModel = repositoryMyModel.Find(id.Value);
 
             if (myModel == null)
             {
@@ -92,14 +95,14 @@ namespace ShopM4.Controllers
                 return NotFound();
             }
 
-            var myModel = db.MyModel.Find(id);
+            var myModel = repositoryMyModel.Find(id.Value);
 
             if (myModel == null)
             {
                 return NotFound();
             }
-            db.MyModel.Remove(myModel);
-            db.SaveChanges();
+            repositoryMyModel.Remove(myModel);
+            repositoryMyModel.Save();
 
             return RedirectToAction("Index");
         }

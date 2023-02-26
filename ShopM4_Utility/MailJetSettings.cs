@@ -1,8 +1,8 @@
 ﻿namespace ShopM4_Utility
 {
-    public class MailJetSettings
+    public class GMailSettings
     {
-        public string ApiKey { get; set; }
-        public string SecretKey { get; set; }
+        public string Sender { get; set; }
+        public string Password { get; set; }
     }
 }

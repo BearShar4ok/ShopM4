@@ -5,11 +5,11 @@ VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopM4", "ShopM4\ShopM4.csproj", "{2479D877-1EC3-44F2-8D63-BE2981C70FC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopM4_Utility", "ShopM4_Utility\ShopM4_Utility.csproj", "{C0CF0AA4-E1C3-4F0E-BDE0-D573F80A4392}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopM4_Utility", "ShopM4_Utility\ShopM4_Utility.csproj", "{C0CF0AA4-E1C3-4F0E-BDE0-D573F80A4392}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopM4_Models", "ShopM4_Models\ShopM4_Models.csproj", "{22616D9C-AD1C-4A1A-BD79-57194C0ACCB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopM4_Models", "ShopM4_Models\ShopM4_Models.csproj", "{22616D9C-AD1C-4A1A-BD79-57194C0ACCB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopM4_DataMigrations", "ShopM4_DataMigrations\ShopM4_DataMigrations.csproj", "{06314A2A-1115-459D-BE08-9783F8997285}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopM4_DataMigrations", "ShopM4_DataMigrations\ShopM4_DataMigrations.csproj", "{06314A2A-1115-459D-BE08-9783F8997285}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

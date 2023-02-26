@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ShopM4_DataMigrations.Data;
+using ShopM4_DataMigrations.Repository.IReporitory;
 using ShopM4_Models;
 using ShopM4_Models.ViewModels;
 using ShopM4_Utility;
@@ -14,16 +15,17 @@ namespace ShopM4.Controllers
     [Authorize(Roles = PathManager.AdminRole)]
     public class ProductController : Controller
     {
-        private ApplicationDbContext db;
+        //private ApplicationDbContext db;
+        private IRepositoryProduct repositoryProduct;
         private IWebHostEnvironment webHostEnvironment;
-        public ProductController(ApplicationDbContext db, IWebHostEnvironment webHostEnvironment)
+        public ProductController(IRepositoryProduct repositoryProduct, IWebHostEnvironment webHostEnvironment)
         {
-            this.db = db;
+            this.repositoryProduct = repositoryProduct;
             this.webHostEnvironment = webHostEnvironment;
         }
         public IActionResult Index()
         {
-            IEnumerable<Product> objList = db.Product;
+            IEnumerable<Product> objList = repositoryProduct.GetAll();
             //links to categories
             foreach (var item in objList)
             {
@@ -46,16 +48,8 @@ namespace ShopM4.Controllers
             ProductViewModel productViewModel = new ProductViewModel()
             {
                 Product = new Product(),
-                CategoriesList = db.Category.Select(x => new SelectListItem
-                {
-                    Text = x.Name,
-                    Value = x.Id.ToString(),
-                }),
-                MyModelList = db.MyModel.Select(x => new SelectListItem
-                {
-                    Text = x.Name,
-                    Value = x.Id.ToString(),
-                }),
+                CategoriesList = repositoryProduct.GetListItems(PathManager.NameCategory),
+                MyModelList = repositoryProduct.GetListItems(PathManager.NameMyModel),
             };
             //Product p = new Product();
             if (id == null)
@@ -64,7 +58,7 @@ namespace ShopM4.Controllers
             }
             else
             {
-                productViewModel.Product = db.Product.Find(id);
+                productViewModel.Product = repositoryProduct.Find(id.Value);
                 if (productViewModel.Product == null)
                 {
                     return NotFound();
@@ -90,12 +84,12 @@ namespace ShopM4.Controllers
                     files[0].CopyTo(filestream);
                 }
                 productViewModel.Product.Image = imageName + ext;
-                db.Add(productViewModel.Product);
+                repositoryProduct.Add(productViewModel.Product);
             }
             else
             {
-                var product = db.Product.AsNoTracking().FirstOrDefault(
-                    x => x.Id == productViewModel.Product.Id);
+                var product = repositoryProduct.FirstOrDefault(
+                    x => x.Id == productViewModel.Product.Id, isTracking: false);
                 if (files.Count > 0)
                 {
                     string upload = wwRoot + PathManager.ImageProductPath;
@@ -120,9 +114,9 @@ namespace ShopM4.Controllers
                 {
                     productViewModel.Product.Image = product.Image;
                 }
-                db.Update(productViewModel.Product);
+                repositoryProduct.Update(productViewModel.Product);
             }
-            db.SaveChanges();
+            repositoryProduct.Save();
             return RedirectToAction("Index");
         }
         [HttpGet]
@@ -132,13 +126,15 @@ namespace ShopM4.Controllers
             {
                 return NotFound();
             }
-            var product = db.Product.Find(id);
+            var product = repositoryProduct.FirstOrDefault(x => x.Id == id,
+                includeProperties: PathManager.NameCategory + "," + PathManager.NameMyModel);
             if (product == null)
             {
                 return NotFound();
             }
-            product.Category = db.Category.Find(product.CategoryId);
-            product.MyModel = db.MyModel.Find(product.MyModelId);
+            //product.Category = db.Category.Find(product.CategoryId);
+            //
+            //product.MyModel = db.MyModel.Find(product.MyModelId);
 
             return View(product);
         }
@@ -149,7 +145,7 @@ namespace ShopM4.Controllers
             {
                 return NotFound();
             }
-            var product = db.Product.Find(id);
+            Product product = repositoryProduct.Find(id.Value);
 
             string upload = webHostEnvironment.WebRootPath + PathManager.ImageProductPath;
 
@@ -158,8 +154,8 @@ namespace ShopM4.Controllers
             if (System.IO.File.Exists(oldFile))
                 System.IO.File.Delete(oldFile);
 
-            db.Product.Remove(product);
-            db.SaveChanges();
+            repositoryProduct.Remove(product);
+            repositoryProduct.Save();
 
             return RedirectToAction("Index");
         }

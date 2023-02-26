@@ -17,5 +17,7 @@ namespace ShopM4_DataMigrations.Data
 
         public DbSet<Product> Product { get; set; }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
+        public DbSet<QueryHeader> QueryHeader { get; set; }
+        public DbSet<QueryDetail> QueryDetail { get; set; }
     }
 }

@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using ShopM4_Models.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
+using ShopM4_DataMigrations.Repository.IReporitory;
 
 namespace ShopM4.Controllers
 {
@@ -13,16 +15,25 @@ namespace ShopM4.Controllers
     [Authorize]
     public class CartController : Controller
     {
-        ApplicationDbContext db;
 
         ProductUserViewModel productUserViewModel;
         IWebHostEnvironment webHostEnvironment;
         IEmailSender emailSender;
+        IRepositoryProduct repositoryProduct;
+        IRepositoryApplicationUser repositoryApplicationUser;
+        IRepositoryQueryDetail repositoryQueryDetail;
+        IRepositoryQueryHeader repositoryQueryHeader;
 
-        public CartController(ApplicationDbContext db, 
+        public CartController(IRepositoryProduct repositoryProduct,
+            IRepositoryApplicationUser repositoryApplicationUser,
+            IRepositoryQueryDetail repositoryQueryDetail,
+            IRepositoryQueryHeader repositoryQueryHeader,
             IWebHostEnvironment webHostEnvironment, IEmailSender emailSender)
         {
-            this.db = db;
+            this.repositoryQueryDetail = repositoryQueryDetail;
+            this.repositoryQueryHeader = repositoryQueryHeader;
+            this.repositoryApplicationUser = repositoryApplicationUser;
+            this.repositoryProduct = repositoryProduct;
             this.webHostEnvironment = webHostEnvironment;
             this.emailSender = emailSender;
         }
@@ -39,7 +50,9 @@ namespace ShopM4.Controllers
             // получаем лист id товаров
             List<int> productsIdInCart = cartList.Select(x => x.ProductId).ToList();
             // извлекаем сами продукты по списку id
-            IEnumerable<Product> productList = db.Product.Where(x => productsIdInCart.Contains(x.Id));
+            IEnumerable<Product> productList = repositoryProduct.GetAll(
+                x => productsIdInCart.Contains(x.Id),
+                includeProperties: PathManager.NameCategory);
             return View(productList);
         }
         public IActionResult Remove(int id)
@@ -66,13 +79,13 @@ namespace ShopM4.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult >SummaryPost(ProductUserViewModel productUserViewModel)
+        public async Task<IActionResult> SummaryPost(ProductUserViewModel productUserViewModel)
         {
             var path = webHostEnvironment.WebRootPath + Path.DirectorySeparatorChar.ToString() +
                  "templates" + Path.DirectorySeparatorChar.ToString() + "Inquiry.html";
             var subject = "New order";
             string bodyHtml = "";
-            using(StreamReader r = new StreamReader(path))
+            using (StreamReader r = new StreamReader(path))
             {
                 bodyHtml = r.ReadToEnd();
             }
@@ -83,12 +96,42 @@ namespace ShopM4.Controllers
                 textProducts += $"-Name: {item.Name}, ID: {item.Id}\n";
             }
 
-           string body= string.Format(bodyHtml, productUserViewModel.ApplicationUser.FullNama,
-                productUserViewModel.ApplicationUser.Email,
-                productUserViewModel.ApplicationUser.PhoneNumber, textProducts);
+            string body = string.Format(bodyHtml, productUserViewModel.ApplicationUser.FullName,
+                 productUserViewModel.ApplicationUser.Email,
+                 productUserViewModel.ApplicationUser.PhoneNumber, textProducts);
 
             await emailSender.SendEmailAsync(productUserViewModel.ApplicationUser.Email, subject, body);
-            //await emailSender.SendEmailAsync(productUserViewModel.ApplicationUser.Email, subject, body);
+
+            
+
+            QueryHeader queryHeader = new QueryHeader()
+            {
+                ApplicationUserId = productUserViewModel.ApplicationUser.Id,
+                QueryDate = DateTime.Now,
+                PhoneNumber = productUserViewModel.ApplicationUser.PhoneNumber,
+                FullName = productUserViewModel.ApplicationUser.FullName,
+                Email = productUserViewModel.ApplicationUser.Email,
+                ApplicationUser = productUserViewModel.ApplicationUser
+            };
+            repositoryQueryHeader.Add(queryHeader);
+            repositoryQueryHeader.Save();
+
+
+            foreach (Product product in productUserViewModel.ProductList)
+            {
+                QueryDetail queryDetail = new QueryDetail()
+                {
+                    ProductId= product.Id,
+                    QueryHeader= queryHeader,
+                    QueryHeaderId= queryHeader.Id,
+                    Product = repositoryProduct.Find(product.Id),
+                };
+                repositoryQueryDetail.Add(queryDetail);
+            }
+            
+            
+            repositoryQueryHeader.Save();
+
 
             return RedirectToAction("InquiryConformation");
         }
@@ -112,12 +155,13 @@ namespace ShopM4.Controllers
             List<int> productsIdInCart = cartList.Select(x => x.ProductId).ToList();
 
             // извлекаем сами продукты по списку id
-            IEnumerable<Product> productList = db.Product.Where(x => productsIdInCart.Contains(x.Id));
+            IEnumerable<Product> productList = repositoryProduct.GetAll(
+                x => productsIdInCart.Contains(x.Id));
 
 
             productUserViewModel = new ProductUserViewModel()
             {
-                ApplicationUser = db.ApplicationUser.FirstOrDefault(x => x.Id == claim.Value),
+                ApplicationUser = repositoryApplicationUser.FirstOrDefault(x => x.Id == claim.Value),
                 ProductList = productList.ToList()
             };
 

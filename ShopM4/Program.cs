@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using ShopM4_DataMigrations.Repository;
 using ShopM4_DataMigrations.Data;
+using ShopM4_DataMigrations.Repository.IReporitory;
 using ShopM4_Utility;
+using ShopM4_Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(
@@ -17,12 +20,19 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();//����� ��� ������ � �������� �� ���
 
+builder.Services.AddScoped<IRepositoryCategory, RepositoryCategory>();
+builder.Services.AddScoped<IRepositoryMyModel, RepositoryMyModel>();
+builder.Services.AddScoped<IRepositoryProduct, RepositoryProduct>();
+builder.Services.AddScoped<IRepositoryQueryDetail, RepositoryQueryDeatail>();
+builder.Services.AddScoped<IRepositoryQueryHeader, RepositoryQueryHeader>();
+builder.Services.AddScoped<IRepositoryApplicationUser, RepositoryApplicationUser>();
+
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = "Winter2022";
     //options.IdleTimeout = TimeSpan.FromSeconds(10);
 }); // ��������� ������ ������
-builder.Services.AddTransient<IEmailSender,EmailSender>();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

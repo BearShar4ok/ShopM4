@@ -10,38 +10,45 @@
 {
         <form method="post" asp-action="Summary">
 
-        @foreach (var item in Model)
-        {
-                    <p>
-                        <img src="@PathManager.ImageProductPath@item.Image" width="100" class="rounded" />
+        <!--foreach (var item in Model)
+            {-->
+                             <div class="block-1" style="display: block">
+                @foreach (var prod in Model)
+                {
+                        <partial name="_ProductCard" model="prod" style="display:flex"/>
+                }
+            </div>
+                        <!-- <p>
+                        <img src="PathManager.ImageProductPath@item.Image" width="100" class="rounded" />
                     </p>
 
                     <p>
-                        Product Name: @item.Name
+                        Product Name: item.Name
                     </p>
 
                     <p>
-                        Description: @item.ShortDescription
+                        Description: item.ShortDescription
                     </p>
 
                     <p>
-                        Price: @item.Price
+                        Price: item.Price
                     </p>
 
                     <p>
-                        <a class="btn btn-danger" asp-action="Remove" asp-route-Id="@item.Id">
+                        <a class="btn btn-danger" asp-action="Remove" asp-route-Id="item.Id">
                             TRASH
                         </a>
                     </p>
-        }
+        }-->
 
 
-            <p>
-                <button type="submit" class="btn btn-success">
+                                <div class="block-2" style="clear: both">
+
+                            <button type="submit" class="btn btn-success"style="margin:15px 5px 5px 0px" >
                     Continue
                 </button>
-            </p>
 
+                </div>
         </form>
 }
 else

@@ -1,8 +1,9 @@
-﻿using Mailjet.Client.TransactionalEmails;
-using Mailjet.Client;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Mailjet.Client.Resources;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using MimeKit;
+using MimeKit.Text;
 
 namespace ShopM4_Utility
 {
@@ -13,30 +14,22 @@ namespace ShopM4_Utility
         {
             this.configuration = configuration;
         }
-        public Task SendEmailAsync(string email, string subject, string htmlMessage)
+        public async Task SendEmailAsync(string emaiAdressl, string subject, string htmlMessage)
         {
-            return Execute(email, subject, htmlMessage);
-        }
-        public async Task Execute(string email, string subject, string htmlMessage)
-        {
-            MailJetSettings m = configuration.GetSection("MailJet").Get<MailJetSettings>();
+            GMailSettings m = configuration.GetSection("GmailSettings").Get<GMailSettings>();
+            // create email message
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(m.Sender));
+            email.To.Add(MailboxAddress.Parse(emaiAdressl));
+            email.Subject = subject;
+            email.Body = new TextPart(TextFormat.Html) { Text = htmlMessage };
 
-            MailjetClient client = new MailjetClient(m.ApiKey, m.SecretKey);
-            
-            MailjetRequest request = new MailjetRequest
-            {
-                Resource = Send.Resource
-            };
-
-            var emailMessage = new TransactionalEmailBuilder().
-                WithFrom(new SendContact(PathManager.EmailSender)).
-                WithSubject(subject).
-                WithHtmlPart(htmlMessage).
-                WithTo(new SendContact(email)).
-                Build();
-
-            var response = await client.SendTransactionalEmailAsync(emailMessage);
+            // send email
+            using var smtp = new SmtpClient();
+            await smtp.ConnectAsync("smtp.gmail.com", 587);
+            smtp.Authenticate(m.Sender, m.Password);
+            await smtp.SendAsync(email);
+            await smtp.DisconnectAsync(true);
         }
     }
-
 }
