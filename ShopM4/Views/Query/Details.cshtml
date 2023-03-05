@@ -1,0 +1,36 @@
+﻿
+@model ShopM4_Models.ViewModels.QueryViewModel
+
+<form method="post">
+    <a asp-action="Index" class="btn form-control btn-warning">Back</a>
+    <h2>Information</h2>
+    <table>
+        <tr>
+            <td>Name</td>
+            <td><input asp-for="QueryHeader.FullName" type="text" class="form-control"></td>
+        </tr>
+        <tr>
+            <td>Phone</td>
+            <td><input asp-for="QueryHeader.PhoneNumber" type="text" class="form-control"></td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td><input asp-for="QueryHeader.Email" type="text" class="form-control"></td>
+        </tr>
+        <tr>
+            <td>Query Date</td>
+            <td><input value="@Model.QueryHeader.QueryDate.ToShortDateString()" type="text" class="form-control"></td>
+        </tr>
+        <tr>
+            <td><input value="Change" type="submit"  class="form-control btn-info"/></td>
+         
+            <td><input value="Delete" type="submit"  class="form-control btn-danger"/></td>
+
+        </tr>
+    </table>
+    <br />
+
+    <h2>Details</h2>
+    <h5>Product Name</h5>
+    <p>Price: 100 p.</p>
+</form>

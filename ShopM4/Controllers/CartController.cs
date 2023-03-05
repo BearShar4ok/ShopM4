@@ -81,6 +81,11 @@ namespace ShopM4.Controllers
         [HttpPost]
         public async Task<IActionResult> SummaryPost(ProductUserViewModel productUserViewModel)
         {
+            var identityClaim = (ClaimsIdentity)User.Identity;
+
+            var claim = identityClaim.FindFirst(ClaimTypes.NameIdentifier);
+            var ss = repositoryApplicationUser.FirstOrDefault(x => x.Id == claim.Value);
+
             var path = webHostEnvironment.WebRootPath + Path.DirectorySeparatorChar.ToString() +
                  "templates" + Path.DirectorySeparatorChar.ToString() + "Inquiry.html";
             var subject = "New order";
@@ -102,16 +107,18 @@ namespace ShopM4.Controllers
 
             await emailSender.SendEmailAsync(productUserViewModel.ApplicationUser.Email, subject, body);
 
-            
+
 
             QueryHeader queryHeader = new QueryHeader()
             {
-                ApplicationUserId = productUserViewModel.ApplicationUser.Id,
+                //ApplicationUserId = productUserViewModel.ApplicationUser.Id,
+                ApplicationUserId = claim.Value,
                 QueryDate = DateTime.Now,
                 PhoneNumber = productUserViewModel.ApplicationUser.PhoneNumber,
                 FullName = productUserViewModel.ApplicationUser.FullName,
                 Email = productUserViewModel.ApplicationUser.Email,
-                ApplicationUser = productUserViewModel.ApplicationUser
+                //ApplicationUser = productUserViewModel.ApplicationUser//repositoryApplicationUser.FirstOrDefault(x => x.Id == claim.Value)
+                ApplicationUser = repositoryApplicationUser.FirstOrDefault(x => x.Id == claim.Value)
             };
             repositoryQueryHeader.Add(queryHeader);
             repositoryQueryHeader.Save();
