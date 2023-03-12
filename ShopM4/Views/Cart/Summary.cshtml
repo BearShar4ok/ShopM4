@@ -21,7 +21,9 @@
         <input type="text" asp-for="@Model.ApplicationUser.Email" class="form-control" />
     </p>
 
-
+    @{
+        double totalprice = 0;
+    }
     <!-- Products -->
 
     @for (int i = 0; i < Model.ProductList.Count(); i++)
@@ -29,13 +31,24 @@
                 <div style="border:groove; border-color:lightgray;border-width:2px;border-radius:5px; margin:15px 0px 5px 0px">
                 <input type="hidden" asp-for="@Model.ProductList[i].Id" />
 
-                    Product Name: @Model.ProductList[i].Name
-                    <br/>
-                        Price: @Model.ProductList[i].Price
-
+                    <p>Product Name: @Model.ProductList[i].Name</p>
+                    @if(User.IsInRole(ShopM4_Utility.PathManager.AdminRole))
+                    {
+                        <p>Count: @Model.ProductList[i].TempCount</p>
+                        <p>TotalPrice: @(Model.ProductList[i].TempCount * @Model.ProductList[i].Price)</p>
+                        totalprice += Model.ProductList[i].TempCount * Model.ProductList[i].Price;
+                    }
+                    else{
+                       <p> Price: @Model.ProductList[i].Price</p>
+                    }
                     </div>
     }
-
+     @if(User.IsInRole(ShopM4_Utility.PathManager.AdminRole))
+    {
+        <h3>
+            Total price products: @totalprice
+        </h3>
+    }
     <p>
         <button type="submit" class="btn btn-success form-control">Submit</button>
     </p>

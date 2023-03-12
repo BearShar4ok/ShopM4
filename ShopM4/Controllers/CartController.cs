@@ -64,6 +64,18 @@ namespace ShopM4.Controllers
 
             return View(productList);
         }
+        [HttpPost]
+        [ActionName("Index")]
+        public IActionResult IndexPost(List<Product> products)
+        {
+            List<Cart> carts = new List<Cart>();
+            foreach (var item in products)
+            {
+                carts.Add(new Cart() { ProductId = item.Id, Count = item.TempCount });
+            }
+            HttpContext.Session.Set(PathManager.SessionCart, carts);
+            return RedirectToAction("Summary");
+        }
         public IActionResult Remove(int id)
         {
             // удаление из корзины
@@ -154,10 +166,37 @@ namespace ShopM4.Controllers
         [HttpPost]
         public IActionResult Summary()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            ApplicationUser applicationUser;
+            if (User.IsInRole(PathManager.AdminRole))
+            {
+                if (HttpContext.Session.Get<int>(PathManager.SessionQuery)!=0)
+                {
+                    QueryHeader queryheader = repositoryQueryHeader.FirstOrDefault(
+                      x => x.Id == HttpContext.Session.Get<int>(PathManager.SessionQuery));
+                    applicationUser = new ApplicationUser()
+                    {
+                        Email = queryheader.Email,
+                        PhoneNumber = queryheader.PhoneNumber,
+                        FullName = queryheader.FullName,
+                    };
+                }
+                else
+                {
+                    applicationUser = new ApplicationUser();
+                    
+                }
+            }
+            else
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
 
-            // если пользователь вошел в систему, то объект будет определен
-            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                // если пользователь вошел в систему, то объект будет определен
+                var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                applicationUser = repositoryApplicationUser.FirstOrDefault(
+                    x=> x.Id==claim.Value);
+            }
+
+            
 
             List<Cart> cartList = new List<Cart>();
 
@@ -177,9 +216,14 @@ namespace ShopM4.Controllers
 
             productUserViewModel = new ProductUserViewModel()
             {
-                ApplicationUser = repositoryApplicationUser.FirstOrDefault(x => x.Id == claim.Value),
-                ProductList = productList.ToList()
+                ApplicationUser = applicationUser
             };
+            foreach (var item in cartList)
+            {
+                Product product = repositoryProduct.FirstOrDefault(x => x.Id == item.ProductId);
+                product.TempCount = item.Count;
+                productUserViewModel.ProductList.Add(product);
+            }
 
             return View(productUserViewModel);
         }

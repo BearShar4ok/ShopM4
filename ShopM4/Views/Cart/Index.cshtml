@@ -1,5 +1,6 @@
-﻿@using ShopM4_Utility;
-@model IEnumerable<Product>
+﻿@using ShopM4_Utility
+@using ShopM4_Models
+@model List<Product>
 
 <h1>Shooping Cart</h1>
 
@@ -16,11 +17,16 @@
         }
        
         <div class="block-1" style="display: block">
-            
-            @foreach (var prod in Model)
+            @for (int i = 0; i < Model.Count(); i++)
             {
-               <partial name="_ProductCard" model="(prod,true)" style="display:flex"/>
-               _totalPriceProducts += prod.TempCount * prod.Price;
+                <input asp-for="@Model[i].Id" hidden/>
+               <partial name="_ProductCard" model="(Model[i],true)" style="display:flex"/>
+               _totalPriceProducts += Model[i].TempCount * Model[i].Price;
+               <p>
+                <a class="btn btn-danger" asp-action="Remove" asp-route-Id="@Model[i].Id">
+                    <i class="fa-solid fa-trash"></i>
+                </a>
+            </p>
             }
         </div>
         
@@ -30,7 +36,8 @@
             @if (User.IsInRole(PathManager.AdminRole))
             {
                 <h2>Total: @_totalPriceProducts</h2>
-                <input type="submit" value="Update Cart" class="btn btn-info form-control" asp-action="Update" />
+                <input type="submit" value="Update Cart" class="btn btn-info form-control" asp-action="Update"
+                formmethod="post" name="Update"/>
             }
 
             <button type="submit" class="btn btn-success"style="margin:15px 5px 5px 0px" >
