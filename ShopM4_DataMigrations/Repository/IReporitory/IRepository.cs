@@ -18,6 +18,7 @@ namespace ShopM4_DataMigrations.Repository.IReporitory
             , bool isTracking = true);
         void Add(T item);
         void Remove(T item);
+        void Remove(IEnumerable<T> items);
         void Save();
     }
 }

@@ -23,5 +23,8 @@ namespace ShopM4_Models
         public int MyModelId { get; set; }
         [ForeignKey("MyModelId")]
         public virtual MyModel MyModel { get; set; }
+        [NotMapped]
+        [Range(1, 100)]
+        public int TempCount { get; set; } = 1;
     }
 }

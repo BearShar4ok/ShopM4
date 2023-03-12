@@ -1,12 +1,32 @@
 ﻿@using ShopM4_Utility;
-@model ShopM4_Models.Product
+@model (ShopM4_Models.Product,bool)
 
-<div class="card filter @Model.Category.Name.Replace(" ","_")" style="display:flex; float:left; width: 18rem;
-                        height:25rem; margin: 5px 10px 5px 0px; border: groove; border-color:peachpuff; border-width:2px;">
-  <img src="@PathManager.ImageProductPath@Model.Image" class="card-img-top" alt="...">
+@{
+    string a = "25rem";
+@if(User.IsInRole(PathManager.AdminRole) && Model.Item2)
+{
+        a = "30rem";
+    }
+}
+
+
+<div class="card filter @Model.Item1.Category.Name.Replace(" ","_")" style="display:flex; float:left; width: 18rem;
+       height:@a; margin: 5px 10px 5px 0px; border: groove; border-color:peachpuff; border-width:2px;">
+  <img src="@PathManager.ImageProductPath@Model.Item1.Image" class="card-img-top" alt="...">
   <div class="card-body">
-    <h5 class="card-title">@Model.Name</h5>
-    <p class="card-text">@Model.ShortDescription</p>
-    <a asp-controller="Home" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-primary">Detail</a>
+     @if (User.IsInRole(PathManager.AdminRole) && Model.Item2)
+     {
+         <p>
+             Count: 
+             <input type="text" asp-for="@Model.Item1.TempCount" class="form-control" />
+         </p>
+         
+         <p>
+             Total Price: @(Model.Item1.TempCount * Model.Item1.Price)
+         </p>
+     }
+    <h5 class="card-title">@Model.Item1.Name</h5>
+    <p class="card-text">@Model.Item1.ShortDescription</p>
+    <a asp-controller="Home" asp-action="Details" asp-route-id="@Model.Item1.Id" class="btn btn-primary">Detail</a>
   </div>
 </div>

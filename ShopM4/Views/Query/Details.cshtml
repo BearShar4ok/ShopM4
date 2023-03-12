@@ -2,6 +2,7 @@
 @model ShopM4_Models.ViewModels.QueryViewModel
 
 <form method="post">
+    <input hidden asp-for="QueryHeader.Id" />
     <a asp-action="Index" class="btn form-control btn-warning">Back</a>
     <h2>Information</h2>
     <table>
@@ -19,18 +20,21 @@
         </tr>
         <tr>
             <td>Query Date</td>
-            <td><input value="@Model.QueryHeader.QueryDate.ToShortDateString()" type="text" class="form-control"></td>
+            <td><input readonly value="@Model.QueryHeader.QueryDate.ToShortDateString()" type="text" class="form-control"></td>
         </tr>
         <tr>
-            <td><input value="Change" type="submit"  class="form-control btn-info"/></td>
+            <td><input value="Change" type="submit" formaction="/Query/Details" class="form-control btn-info"/></td>
          
-            <td><input value="Delete" type="submit"  class="form-control btn-danger"/></td>
-
+            <td><input value="Delete" type="submit" formaction="/Query/Delete"  class="form-control btn-danger"/></td>
         </tr>
     </table>
     <br />
 
     <h2>Details</h2>
-    <h5>Product Name</h5>
-    <p>Price: 100 p.</p>
+    @foreach(var item in Model.QueryDetail)
+    {
+        <h5>Product Name: @item.Product.Name</h5>
+        <p>Price: @item.Product.Price$</p>
+    }
+    
 </form>

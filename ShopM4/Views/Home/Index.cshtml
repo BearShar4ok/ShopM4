@@ -11,7 +11,7 @@
     <div>
         @foreach(var prod in Model.Products)
         {
-            <partial name="_ProductCard" model="prod" style="display:flow"/>
+            <partial name="_ProductCard" model="(prod,true)" style="display:flow"/>
         }
     </div>
     <br style="clear: both"/>

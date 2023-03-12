@@ -44,7 +44,7 @@ namespace ShopM4_DataMigrations.Repository
                     query = query.Include(item);
                 }
             }
-            if (isTracking)
+            if (!isTracking)
             {
                 query = query.AsNoTracking();
             }
@@ -72,7 +72,7 @@ namespace ShopM4_DataMigrations.Repository
             {
                 query = orderBy(query);
             }
-            if (isTracking)
+            if (!isTracking)
             {
                 query = query.AsNoTracking();
             }
@@ -82,6 +82,11 @@ namespace ShopM4_DataMigrations.Repository
         public void Remove(T item)
         {
             dbSet.Remove(item);
+        }
+
+        public void Remove(IEnumerable<T> items)
+        {
+            dbSet.RemoveRange(items);
         }
 
         public void Save()

@@ -50,9 +50,18 @@ namespace ShopM4.Controllers
             // получаем лист id товаров
             List<int> productsIdInCart = cartList.Select(x => x.ProductId).ToList();
             // извлекаем сами продукты по списку id
-            IEnumerable<Product> productList = repositoryProduct.GetAll(
+            IEnumerable<Product> productListTemp = repositoryProduct.GetAll(
                 x => productsIdInCart.Contains(x.Id),
-                includeProperties: PathManager.NameCategory);
+                includeProperties:PathManager.NameCategory);
+
+            List<Product> productList = new List<Product>();
+            foreach (var item in cartList)
+            {
+                Product p = productListTemp.FirstOrDefault(x => x.Id == item.ProductId);
+                p.TempCount = item.Count;
+                productList.Add(p);
+            }
+
             return View(productList);
         }
         public IActionResult Remove(int id)
@@ -173,6 +182,21 @@ namespace ShopM4.Controllers
             };
 
             return View(productUserViewModel);
+        }
+        [HttpPost]
+        public IActionResult Update(IEnumerable<Product> products)
+        {
+            List<Cart> cartList = new List<Cart>();
+            foreach (var item in products)
+            {
+                cartList.Add(new Cart()
+                {
+                    ProductId = item.Id,
+                    Count = item.TempCount
+                });
+            }
+            HttpContext.Session.Set(PathManager.SessionCart, cartList);
+            return RedirectToAction("Index");
         }
     }
 }

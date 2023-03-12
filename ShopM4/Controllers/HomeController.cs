@@ -27,12 +27,29 @@ namespace ShopM4.Controllers
         {
             HomeViewModel homeViewModel = new HomeViewModel()
             {
-
                 Products = repositoryProduct.GetAll(
                     includeProperties: PathManager.NameCategory + "," + PathManager.NameMyModel),
                 Categories = repositoryCategory.GetAll(),
 
             };
+            foreach (var item in homeViewModel.Products)
+            {
+                item.TempCount = 0;
+            }
+            List<Cart> cartList = new List<Cart>();
+            if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
+               && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)
+            {
+                cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
+            }
+            if (cartList.Count() > 0)
+            {
+                foreach (var item in cartList)
+                {
+                    Product p = homeViewModel.Products.FirstOrDefault(x => x.Id == item.ProductId);
+                    p.TempCount = item.Count;
+                }
+            }
             return View(homeViewModel);
         }
 
@@ -58,6 +75,7 @@ namespace ShopM4.Controllers
                 if (item.ProductId == id)
                 {
                     detailsViewModel.IsInCart = true;
+                    detailsViewModel.Product.TempCount= cartList.FirstOrDefault(x=>x.ProductId==id).Count;
                 }
             }
 
@@ -65,7 +83,7 @@ namespace ShopM4.Controllers
         }
 
         [HttpPost]
-        public IActionResult DetailsPost(int id)
+        public IActionResult DetailsPost(int id, DetailsViewModel detailsViewModel)
         {
             List<Cart> cartList = new List<Cart>();
             if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null &&
@@ -73,7 +91,7 @@ namespace ShopM4.Controllers
             {
                 cartList = HttpContext.Session.Get<List<Cart>>(PathManager.SessionCart);
             }
-            cartList.Add(new Cart { ProductId = id });
+            cartList.Add(new Cart { ProductId = id, Count = detailsViewModel.Product.TempCount });
 
             HttpContext.Session.Set(PathManager.SessionCart, cartList);
             return RedirectToAction("Index");

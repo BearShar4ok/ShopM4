@@ -10,48 +10,37 @@
 {
         <form method="post" asp-action="Summary">
 
-        <!--foreach (var item in Model)
-            {-->
-                             <div class="block-1" style="display: block">
-                @foreach (var prod in Model)
-                {
-                        <partial name="_ProductCard" model="prod" style="display:flex"/>
-                }
-            </div>
-                        <!-- <p>
-                        <img src="PathManager.ImageProductPath@item.Image" width="100" class="rounded" />
-                    </p>
 
-                    <p>
-                        Product Name: item.Name
-                    </p>
-
-                    <p>
-                        Description: item.ShortDescription
-                    </p>
-
-                    <p>
-                        Price: item.Price
-                    </p>
-
-                    <p>
-                        <a class="btn btn-danger" asp-action="Remove" asp-route-Id="item.Id">
-                            TRASH
-                        </a>
-                    </p>
-        }-->
+        @{
+            double _totalPriceProducts = 0;
+        }
+       
+        <div class="block-1" style="display: block">
+            
+            @foreach (var prod in Model)
+            {
+               <partial name="_ProductCard" model="(prod,true)" style="display:flex"/>
+               _totalPriceProducts += prod.TempCount * prod.Price;
+            }
+        </div>
+        
 
 
-                                <div class="block-2" style="clear: both">
+        <div class="block-2" style="clear: both">
+            @if (User.IsInRole(PathManager.AdminRole))
+            {
+                <h2>Total: @_totalPriceProducts</h2>
+                <input type="submit" value="Update Cart" class="btn btn-info form-control" asp-action="Update" />
+            }
 
-                            <button type="submit" class="btn btn-success"style="margin:15px 5px 5px 0px" >
-                    Continue
-                </button>
+            <button type="submit" class="btn btn-success"style="margin:15px 5px 5px 0px" >
+                Continue
+            </button>
 
-                </div>
+        </div>
         </form>
 }
 else
 {
-        <p>Cart is emty</p>
+    <p>Cart is emty</p>
 }

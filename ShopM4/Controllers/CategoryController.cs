@@ -38,10 +38,11 @@ namespace ShopM4.Controllers
             {
                 repositoryCategory.Add(category);
                 repositoryCategory.Save();
+                TempData[PathManager.Success] = "OK!";
 
                 return RedirectToAction("Index");
             }
-
+            TempData[PathManager.Error] = "Error!";
             return View(category);
         }
         [HttpGet]
@@ -108,7 +109,7 @@ namespace ShopM4.Controllers
             }
             repositoryCategory.Remove(category);
             repositoryCategory.Save();
-
+            TempData[PathManager.Success] = "Deleted!";
             return RedirectToAction("Index");
         }
     }

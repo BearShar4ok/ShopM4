@@ -23,6 +23,20 @@
     <p>
             @Html.Raw(Model.Product.Description)
     </p>
+    @if(User.IsInRole(ShopM4_Utility.PathManager.AdminRole))
+    {
+        <p>Count: </p>
+        <p>
+            @if(Model.IsInCart)
+            {
+                <input disabled class="form-control"  asp-for="@Model.Product.TempCount"/>
+            }
+            else
+            {
+                <input class="form-control"  asp-for="@Model.Product.TempCount"/>
+            }
+        </p>
+    }
     <p>
         <a class="btn btn-primary" asp-action="Index">Back</a>
 
