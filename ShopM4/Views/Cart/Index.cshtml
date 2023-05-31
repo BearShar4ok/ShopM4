@@ -4,48 +4,43 @@
 
 <h1>Shooping Cart</h1>
 
-<p><a class="btn btn-primary" asp-controller="Home">Continue Shopping</a></p>
+<div>
+    <a class="btn btn-primary" asp-controller="Home">Continue Shopping</a>
+    <a class="btn btn-warning" asp-action="Clear">Clear Cart</a>
+</div>
+
 
 
 @if (Model.Count() > 0)
 {
-        <form method="post" asp-action="Summary">
-
-
-        @{
-            double _totalPriceProducts = 0;
-        }
+      
+    double _totalPriceProducts = 0;
+            
        
-        <div class="block-1" style="display: block">
-            @for (int i = 0; i < Model.Count(); i++)
-            {
-                <input asp-for="@Model[i].Id" hidden/>
-               <partial name="_ProductCard" model="(Model[i],true)" style="display:flex"/>
-               _totalPriceProducts += Model[i].TempCount * Model[i].Price;
-               <p>
-                <a class="btn btn-danger" asp-action="Remove" asp-route-Id="@Model[i].Id">
-                    <i class="fa-solid fa-trash"></i>
-                </a>
-            </p>
-            }
-        </div>
+    <div style="display: block">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <input asp-for="@Model[i].Id" hidden/>
+                ProductCard prodCard = new ProductCard() { Product = Model[i], IsItImportantForAdmin=true, ShowInCart=true };
+            <partial name="_ProductCard" model="prodCard" style="display:flex"/>
+            _totalPriceProducts += Model[i].TempCount * Model[i].Price;
+             
+        }
+    </div>
         
-
-
-        <div class="block-2" style="clear: both">
+            
+    <form method="post" asp-action="Summary">
+        <div style="clear: both">
             @if (User.IsInRole(PathManager.AdminRole))
             {
                 <h2>Total: @_totalPriceProducts</h2>
-                <input type="submit" value="Update Cart" class="btn btn-info form-control" asp-action="Update"
-                formmethod="post" name="Update"/>
             }
-
-            <button type="submit" class="btn btn-success"style="margin:15px 5px 5px 0px" >
+            <button type="submit" class="btn btn-success" style="margin:15px 5px 5px 0px" asp-action="Summary" asp-controller="Cart">
                 Continue
             </button>
 
         </div>
-        </form>
+    </form>
 }
 else
 {

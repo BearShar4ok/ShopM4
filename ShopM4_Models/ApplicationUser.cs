@@ -5,6 +5,7 @@ namespace ShopM4_Models
 {
     public class ApplicationUser : IdentityUser
     {
+        [Required]
         public string FullName { get; set; }
         [NotMapped]
         public string City { get; set; }

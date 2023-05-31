@@ -2,16 +2,17 @@
 
 <div class="container" id="box">
     <div>
-        <button class="btn filter-button" data-filter="all">All</button>
+        <button class="btn filter-button" style="background-color: #c8952e" data-filter="all">All</button>
         @foreach(var item in Model.Categories)
         {
-            <button class="btn filter-button" data-filter="@item.Name.Replace(' ','_')" style="background-color: gray">@item.Name</button>
+            <button class="btn filter-button" data-filter="@item.Name.Replace(' ','_')" style="background-color: #e2c281">@item.Name</button>
         }
     </div>
     <div>
         @foreach(var prod in Model.Products)
         {
-            <partial name="_ProductCard" model="(prod,true)" style="display:flow"/>
+            ProductCard prodCard = new ProductCard() { Product = prod, IsItImportantForAdmin=true, ShowInCart=false };
+            <partial name="_ProductCard" model="prodCard" style="display:flow"/>
         }
     </div>
     <br style="clear: both"/>
@@ -19,15 +20,11 @@
 @section Scripts{
 
 <script>
-        //var all = document.getElementById("box").childNodes;
-        //for(var a in all)
-        //{
-        //       
-        //}
-        //console.log(all);
         $(document).ready(function(){
             $('.filter-button').click(function(){
                 var value = $(this).attr('data-filter');
+                $('.filter-button').css('background-color', '#e2c281');
+                $(this).css('background-color', '#c8952e');
                 if(value == "all")
                 {
                     $('.filter').show('1000');
@@ -36,9 +33,7 @@
                 {
                     $(".filter").not('.'+value).hide('3000');
                     $('.filter').filter('.'+value).show('3000');
-                }
-                
-                
+                }  
             });
         });
 </script>

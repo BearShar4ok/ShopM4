@@ -17,5 +17,14 @@
 
         public const string Success = "Success";
         public const string Error = "Error";
+
+        public const string StatusPending = "Pending";//ожидание
+        public const string StatusAccepted = "Accepted";
+        public const string StatusInProcess = "InProcess";
+        public const string StatusOrderDone = "OrderDone";
+        public const string StatusDenied = "Denied";
+
+        public static IEnumerable<string> StatusList =
+            new List<string>() { StatusPending, StatusAccepted, StatusInProcess, StatusDenied, StatusOrderDone };
     }
 }

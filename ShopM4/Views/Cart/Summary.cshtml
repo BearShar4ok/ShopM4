@@ -3,54 +3,169 @@
 <h1> Summary </h1>
 
 
-<form asp-action="SummaryPost">
+<form asp-action="SummaryPost" id="payment-form">
 
     <!-- User -->
-    <p>
-        <label>Name</label>
-        <input type="text" asp-for="@Model.ApplicationUser.FullName" class="form-control" />
-    </p>
+    <div style="background-color: #cecece; border-radius:25px;padding:15px; display:flex; justify-content:center; flex-direction:row">
+        <div style="width:35%;display:flex; flex-wrap:wrap; flex-direction: row; justify-content:space-evenly; flex-direction:column">
+            <p style="display:flex;flex-direction: column">
+                <input  type="text" asp-for="@Model.ApplicationUser.FullName" class="form-control" placeholder="Name"/>
+                <span asp-validation-for="ApplicationUser.FullName" class="text-danger"></span>
+            </p>
+            <p style=" display:flex;flex-direction: column">
+                <input type="text" asp-for="@Model.ApplicationUser.PhoneNumber" required class="form-control" placeholder="Phone"/>
+                <span asp-validation-for="@Model.ApplicationUser.PhoneNumber" class="text-danger"></span>
+            </p>
+            <p style=" display:flex;flex-direction: column">
+                <input type="text" asp-for="@Model.ApplicationUser.Email" required class="form-control" placeholder="Email"/>
+                <span asp-validation-for="ApplicationUser.Email" class="text-danger"></span>
+            </p>
+        </div>
 
-    <p>
-        <label>Phone</label>
-        <input type="text" asp-for="@Model.ApplicationUser.PhoneNumber" class="form-control" />
-    </p>
-
-    <p>
-        <label>Email</label>
-        <input type="text" asp-for="@Model.ApplicationUser.Email" class="form-control" />
-    </p>
-
+        @if(User.IsInRole(ShopM4_Utility.PathManager.AdminRole))
+        {
+            <div style="width:55%;display:flex; flex-wrap:wrap; justify-content:space-evenly; flex-direction:column">
+                <div style="display:flex; flex-wrap:wrap; flex-direction: row; justify-content:space-evenly; flex-direction:row">
+                    <p>
+                        <input type="text" asp-for="@Model.ApplicationUser.City" class="form-control" placeholder="City"/>
+                        <span asp-validation-for="ApplicationUser.City" class="text-danger"></span>
+                    </p>
+                    <p>
+                        <input type="text" asp-for="@Model.ApplicationUser.Street" class="form-control" placeholder="Street"/>
+                         <span asp-validation-for="ApplicationUser.Street" class="text-danger"></span>
+                    </p>
+                    <p>
+                        <input type="text" asp-for="@Model.ApplicationUser.House" class="form-control" placeholder="House"/>
+                         <span asp-validation-for="ApplicationUser.House" class="text-danger"></span>
+                    </p>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; flex-direction: row; justify-content:space-evenly; flex-direction:row">
+                    <p>
+                        <input type="text" asp-for="@Model.ApplicationUser.Apartament" class="form-control" placeholder="Apartament"/>
+                         <span asp-validation-for="ApplicationUser.Apartament" class="text-danger"></span>
+                    </p>
+                    <p>
+                        <input type="text" asp-for="@Model.ApplicationUser.PostalCode" class="form-control" placeholder="PostalCode"/>
+                         <span asp-validation-for="ApplicationUser.PostalCode" class="text-danger"></span>
+                    </p>
+                </div>
+            </div>
+        }
+    </div>
     @{
         double totalprice = 0;
     }
     <!-- Products -->
-
+    <div style="display:flex; flex-flow:row;flex-wrap:wrap; justify-content:space-between">
     @for (int i = 0; i < Model.ProductList.Count(); i++)
-    {
-                <div style="border:groove; border-color:lightgray;border-width:2px;border-radius:5px; margin:15px 0px 5px 0px">
+    {//cecece
+                <div style="background-color: #ffffff; border-radius:15px; margin:15px 0px 5px 0px; padding:15px; display:flex; flex-flow:column;
+                        border:solid;border-width:2px;border-color:#cecece">
                 <input type="hidden" asp-for="@Model.ProductList[i].Id" />
+                <input type="hidden" asp-for="@Model.ProductList[i].Price" />
+                <input type="hidden" asp-for="@Model.ProductList[i].TempCount" />
 
-                    <p>Product Name: @Model.ProductList[i].Name</p>
+                    Product Name
+                    <input type="text" value="@Model.ProductList[i].Name" class="form-control" disabled/>
                     @if(User.IsInRole(ShopM4_Utility.PathManager.AdminRole))
                     {
-                        <p>Count: @Model.ProductList[i].TempCount</p>
-                        <p>TotalPrice: @(Model.ProductList[i].TempCount * @Model.ProductList[i].Price)</p>
+                        <div>Count</div>
+                        
+                        <input type="text" value="@Model.ProductList[i].TempCount" class="form-control" disabled/>    
+                         <div>TotalPrice</div>
+                        
+                        <input type="text" value="@(Model.ProductList[i].TempCount * @Model.ProductList[i].Price)" class="form-control" disabled/>    
                         totalprice += Model.ProductList[i].TempCount * Model.ProductList[i].Price;
                     }
                     else{
                        <p> Price: @Model.ProductList[i].Price</p>
                     }
-                    </div>
+                </div>
     }
+    </div>
      @if(User.IsInRole(ShopM4_Utility.PathManager.AdminRole))
     {
         <h3>
             Total price products: @totalprice
         </h3>
     }
-    <p>
-        <button type="submit" class="btn btn-success form-control">Submit</button>
-    </p>
+    @if (User.IsInRole(ShopM4_Utility.PathManager.AdminRole))
+    {
+        <div class="checkout container">
+            <div id="dropin-container"></div>
+            <input id="nonce" name="payment_method_nonce" type="hidden"/>
+        </div>
+    }
+    @if (User.IsInRole(ShopM4_Utility.PathManager.AdminRole))
+    {
+        <p>
+            <button type="submit" class="btn btn-success form-control" onclick="funcValidation()">Submit Order</button>
+        </p>
+    }
+    else
+    {
+        <p>
+            <button type="submit" class="btn btn-success form-control" onclick="funcValidation()">Submit</button>
+        </p>
+    }
 
 </form>
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+
+        <script src="https://js.braintreegateway.com/web/dropin/1.34.0/js/dropin.min.js"></script>
+
+        <script>
+            var form = document.querySelector('#payment-form');
+            var tokenClient = "@ViewBag.TokenClient";
+            // Подключение для braintree
+            braintree.dropin.create({
+              authorization: tokenClient,
+              container: '#dropin-container'
+            }, 
+            // Первый параметр для ошибки, второй - экземпляр подключения
+            (error, dropinInstance) => {
+                // тут происходит обработка ошибки
+                form.addEventListener('submit', () => {
+                    // Блочим автоматическую передачу формы
+                    event.preventDefault();
+                    dropinInstance.requestPaymentMethod(function(err,payload){
+                        document.querySelector('#nonce').value=payload.nonce;
+                        form.submit();
+                    })
+                })
+            });
+            function funcValidation(){
+                var full_name = document.getElementById("ApplicationUser_FullName").value;
+                var phone = document.getElementById("ApplicationUser_PhoneNumber").value;
+                var email = document.getElementById("ApplicationUser_Email").value;
+                if(full_name==''){
+                    Swal.fire(
+                        'Error!',
+                        'Please enter name!',
+                        'error'
+                    );
+                    return false;
+                }
+                 if(phone==''){
+                    Swal.fire(
+                        'Error!',
+                        'Please enter phone!',
+                        'error'
+                    );
+                    return false;
+                }
+                 if(email==''){
+                    Swal.fire(
+                        'Error!',
+                        'Please enter email!',
+                        'error'
+                    );
+                    return false;
+                }
+                return true;
+            }
+        </script>
+    }
+}

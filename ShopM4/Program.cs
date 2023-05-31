@@ -6,17 +6,38 @@ using ShopM4_DataMigrations.Data;
 using ShopM4_DataMigrations.Repository.IReporitory;
 using ShopM4_Utility;
 using ShopM4_Models;
+using ShopM4_Utility.BrainTree;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection"))
     );
+
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+//builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
 //builder.Services.AddDefaultIdentity<IdentityUser>()
 //    .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddDefaultUI().AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddAuthentication().AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+});
+
+builder.Services.AddAuthentication().AddFacebook(options =>
+{
+    options.AppId = "242921524810422";
+    options.AppSecret = "add412954f87224d68b97782327b3eed";
+});
+
+
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();//����� ��� ������ � �������� �� ���
 
@@ -25,6 +46,8 @@ builder.Services.AddScoped<IRepositoryMyModel, RepositoryMyModel>();
 builder.Services.AddScoped<IRepositoryProduct, RepositoryProduct>();
 builder.Services.AddScoped<IRepositoryQueryDetail, RepositoryQueryDeatail>();
 builder.Services.AddScoped<IRepositoryQueryHeader, RepositoryQueryHeader>();
+builder.Services.AddScoped<IRepositoryOrderHeader, RepositoryOrderHeader>();
+builder.Services.AddScoped<IRepositoryOrderDetail, RepositoryOrderDetail>();
 builder.Services.AddScoped<IRepositoryApplicationUser, RepositoryApplicationUser>();
 
 builder.Services.AddSession(options =>
@@ -34,6 +57,9 @@ builder.Services.AddSession(options =>
 }); // ��������� ������ ������
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddControllersWithViews();
+builder.Services.Configure<SettingsBrainTree>(
+    builder.Configuration.GetSection("BrainTree"));
+builder.Services.AddSingleton<IBrainTreeBridge, BrainTreeBridge>();
 
 var app = builder.Build();
 

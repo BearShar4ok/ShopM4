@@ -1,0 +1,158 @@
+﻿@model ShopM4_Models.ViewModels.OrderHeaderDetailViewModel
+
+<form method="post">
+    <input asp-for="OrderHeader.Id" hidden/>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm">
+                <h1>Details</h1>
+            </div>
+            <div class="col-sm">
+                <a asp-controller="Order" asp-action="Index" class="btn form-control btn-primary">Return to Orders</a>
+            </div>
+        </div>
+         <div class="row">
+            <div class="col-sm">
+                <div class="row">
+                    <h2>Details Order</h2>
+                </div>
+                <div class="row">
+                    <div class=" col-3">Full Name: </div>
+                    <div class=" col-9">
+                        <input asp-for="OrderHeader.FullName" type ="text" class="form-control"/>    
+                        <span asp-validation-for="OrderHeader.FullName" class="text-danger"></span>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class=" col-3">Phone number: </div>
+                    <div class=" col-9">
+                        <input asp-for="OrderHeader.Phone" type ="text" class="form-control"/>
+                        <span asp-validation-for="OrderHeader.Phone" class="text-danger"></span>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class=" col-3">Email: </div>
+                    <div class=" col-9">
+                        <input asp-for="OrderHeader.Email" type ="text" class="form-control"/>
+                        <span asp-validation-for="OrderHeader.Email" class="text-danger"></span>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class=" col-3">City: </div>
+                    <div class=" col-9">
+                        <input asp-for="OrderHeader.City" type ="text" class="form-control"/> 
+                        <span asp-validation-for="OrderHeader.City" class="text-danger"></span>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class=" col-3">Street: </div>
+                    <div class=" col-9">
+                        <input asp-for="OrderHeader.Street" type ="text" class="form-control"/>
+                        <span asp-validation-for="OrderHeader.Street" class="text-danger"></span>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class=" col-3">House: </div>
+                    <div class=" col-9">
+                        <input asp-for="OrderHeader.House" type ="text" class="form-control"/> 
+                        <span asp-validation-for="OrderHeader.House" class="text-danger"></span>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class=" col-3">Apartment: </div>
+                    <div class=" col-9">
+                        <input asp-for="OrderHeader.Apartament" type ="text" class="form-control"/> 
+                        <span asp-validation-for="OrderHeader.Apartament" class="text-danger"></span>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class=" col-3">Postal code: </div>
+                    <div class=" col-9">
+                        <input asp-for="OrderHeader.PostalCode" type ="text" class="form-control"/> 
+                        <span asp-validation-for="OrderHeader.PostalCode" class="text-danger"></span>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class=" col-3">Date order: </div>
+                    <div class=" col-9">
+                        <input asp-for="OrderHeader.DateOrder" type ="text" readonly class="form-control"/> 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class=" col-3">Date execution: </div>
+                    <div class=" col-9">
+                        <input asp-for="OrderHeader.DateExecution" type ="text" readonly class="form-control"/> 
+                    </div>
+                </div>
+                <div class="row">
+                    <div class=" col-3">ID transaction: </div>
+                    <div class=" col-9">
+                        <input asp-for="OrderHeader.TransactionId" type ="text" readonly class="form-control"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class=" col-3">Status: </div>
+                    <div class=" col-9">
+                        <input asp-for="OrderHeader.Status" type ="text" readonly class="form-control"/> 
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm">
+                <div class="row">
+                    <h2>Product Details</h2>
+                </div>
+                @foreach(var item in Model.OrderDetail)
+                {
+                    <div class="row bg-light m-2">
+                        <h5>Product Name: @item.Product.Name</h5>
+                        <div class="col-sm">
+                            Price: @item.PricePurUnit
+                        </div>
+                            <div class="col-sm">
+                            Count: @item.Count
+                        </div>
+                            <div class="col-sm">
+                            Total: @(item.PricePurUnit*item.Count)
+                        </div>
+                    </div>
+                }
+                
+                <div class="row">
+                    <div class="col-sm">
+                       <h2> Total Price: @Model.OrderHeader.TotalPrice</h2>
+                    </div>
+                </div>
+
+                @if(Model.OrderHeader.Status==ShopM4_Utility.PathManager.StatusAccepted)
+                {
+                    <div class="row m-2">
+                        <div class="col-sm">
+                           <input type="submit" value="In Processing" asp-action="StartInProcessing" class="btn form-control btn-primary"/>
+                        </div>
+                    </div>
+                }
+                @if (Model.OrderHeader.Status == ShopM4_Utility.PathManager.StatusInProcess)
+                {
+                    <div class="row m-2">
+                        <div class="col-sm">
+                            <input type="submit" value="Order Done"  asp-action="StartOrderDone" class="btn form-control btn-primary"/>
+                        </div>
+                    </div>
+                }
+                @if (Model.OrderHeader.Status != ShopM4_Utility.PathManager.StatusDenied)
+                {
+                    <div class="row m-2">
+                        <div class="col-sm">
+                            <input type="submit" value="Cancel Order"  asp-action="StartOrderCancel" class="btn form-control btn-primary"/>
+                        </div>
+                    </div>
+                }
+                <div class="row m-2">
+                    <div class="col-sm">
+                       <input type="submit" value="ВЕРНУТЬ ВСЁ ОБРАТНО ПОКА НАЧАЛЬНИК НЕ ДОСТАЛ РЕМЕНЬ"  asp-action="StartBack" class="btn form-control btn-success"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
