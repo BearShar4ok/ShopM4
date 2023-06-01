@@ -9,10 +9,16 @@ using ShopM4_Models;
 using ShopM4_Utility.BrainTree;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<ApplicationDbContext>(
-    options => options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"))
-    );
+//builder.Services.AddDbContext<ApplicationDbContext>(
+//    options => options.(
+//        builder.Configuration.GetConnectionString("DefaultConnection"))
+//    );
+
+builder.Services
+        .AddDbContext<ApplicationDbContext>(options =>
+        {
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+        });
 
 //builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
 //    .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -59,7 +65,7 @@ builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddControllersWithViews();
 builder.Services.Configure<SettingsBrainTree>(
     builder.Configuration.GetSection("BrainTree"));
-builder.Services.AddSingleton<IBrainTreeBridge, BrainTreeBridge>();
+builder.Services.AddTransient<IBrainTreeBridge, BrainTreeBridge>();
 
 var app = builder.Build();
 

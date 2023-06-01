@@ -20,7 +20,8 @@
     <p>Category: @Model.Product.Category.Name</p>
     <p>
         Description:
-        <input type="text" style="background-color:white"  class="form-control " value="@Model.Product.Description" disabled/>
+        <!--<textarea  type="text" style="background-color:white; white-space: normal;"  class="form-control " value="@Model.Product.Description" disabled/>-->
+        <textarea class="form-control"  rows="14" cols="10" wrap="soft" disabled>@Model.Product.Description</textarea>
     </p>
     @if(User.IsInRole(ShopM4_Utility.PathManager.AdminRole))
     {

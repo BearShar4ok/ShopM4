@@ -2,6 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using ShopM4_Models;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace ShopM4_DataMigrations.Data
 {
@@ -11,6 +16,10 @@ namespace ShopM4_DataMigrations.Data
             : base(options)
         {
 
+        }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
         }
         public DbSet<Category> Category { get; set; }
         public DbSet<ShopM4_Models.MyModel> MyModel { get; set; }
