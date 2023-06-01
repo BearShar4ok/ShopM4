@@ -84,6 +84,8 @@ namespace ShopM4.Controllers
                     files[0].CopyTo(filestream);
                 }
                 productViewModel.Product.Image = imageName + ext;
+                productViewModel.Product.Description = productViewModel.Product.Description.Replace("<p>", "");
+                productViewModel.Product.Description = productViewModel.Product.Description.Replace("</p>", "");
                 repositoryProduct.Add(productViewModel.Product);
             }
             else
@@ -114,6 +116,8 @@ namespace ShopM4.Controllers
                 {
                     productViewModel.Product.Image = product.Image;
                 }
+                productViewModel.Product.Description = productViewModel.Product.Description.Replace("<p>", "");
+                productViewModel.Product.Description = productViewModel.Product.Description.Replace("</p>", "");
                 repositoryProduct.Update(productViewModel.Product);
             }
             repositoryProduct.Save();

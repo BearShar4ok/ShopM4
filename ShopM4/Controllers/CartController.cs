@@ -301,6 +301,10 @@ namespace ShopM4.Controllers
         [HttpPost]
         public IActionResult Update(Product product)
         {
+            if (product != null && (product.TempCount < 1 || product.TempCount > 100))
+            {
+                product.TempCount = 1;
+            }
             List<Cart> cartList = new List<Cart>();
             if (HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart) != null
                 && HttpContext.Session.Get<IEnumerable<Cart>>(PathManager.SessionCart).Count() > 0)

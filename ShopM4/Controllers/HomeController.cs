@@ -81,7 +81,6 @@ namespace ShopM4.Controllers
 
             return View(detailsViewModel);
         }
-
         [HttpPost]
         public IActionResult DetailsPost(int id, DetailsViewModel detailsViewModel)
         {

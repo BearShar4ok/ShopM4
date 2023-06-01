@@ -10,9 +10,9 @@
 }
 <form method="post" asp-controller="Cart" asp-action="Update">
 <div class="card filter @Model.Product.Category.Name.Replace(" ","_")" style="display:flex; float:left; width: 18rem;
-       height:@a; margin: 5px 10px 5px 0px; border: groove; border-color:peachpuff; border-width:2px;">
+       height:@a; margin: 5px 10px 5px 0px; border: groove; border-color:peachpuff; border-width:2px;border-radius:10px">
     <div style="height:10rem">
-        <img src="@PathManager.ImageProductPath@Model.Product.Image" class="card-img-top" style="width: 100%;height:100%;object-fit: cover;" alt="...">
+        <img src="@PathManager.ImageProductPath@Model.Product.Image" class="card-img-top" style="height:100%;width: 100%;object-fit: cover;border-radius:10px 10px 0px 0px" alt="...">
     </div>
   
   <div class="card-body">
@@ -23,6 +23,7 @@
                 <p>
                     Count: 
                     <input type="text" asp-for="@Model.Product.TempCount" class="form-control"/>
+                    <span asp-validation-for="@Model.Product.TempCount" class="text-danger"></span>
                 </p>
                 
             }
@@ -40,16 +41,29 @@
      }
     <h5 class="card-title">@Model.Product.Name</h5>
     <p class="card-text">@Model.Product.ShortDescription</p>
-    <a asp-controller="Home" asp-action="Details" asp-route-id="@Model.Product.Id" class="btn btn-primary">Detail</a>
     <input hidden asp-for="Product.Id"/>
-    @if (Model.ShowInCart)
-    {
-        <a class="btn btn-danger" asp-action="Remove" asp-route-Id="@Model.Product.Id">
-            <i class="fa-solid fa-trash"></i>
-        </a>
+    <div style="display:flex; justify-content:space-evenly">
         
-        <input type="submit" class="btn btn-success"   value="Update"  asp-controller="Cart" asp-action="Update"/>
-    }
+        
+        @if (Model.ShowInCart)
+        {
+            <a asp-controller="Home" asp-action="Details" asp-route-id="@Model.Product.Id" class="btn btn-primary">Detail</a>
+            <a class="btn btn-danger" asp-action="Remove" asp-route-Id="@Model.Product.Id">
+                <i class="fa-solid fa-trash"></i>
+            </a>
+        
+            <input type="submit" class="btn btn-success"   value="Update"  asp-controller="Cart" asp-action="Update"/>
+        }
+        else
+        {
+            <a asp-controller="Home" asp-action="Details" asp-route-id="@Model.Product.Id" class="btn btn-primary" style="width:95%">Detail</a>
+        }
+    </div>
     </div>
 </div>
 </form>
+@section Scripts {
+    @{
+        <partial name="_ValidationScriptsPartial"/>
+        }
+}
