@@ -145,14 +145,14 @@ namespace ShopM4.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     //назначение роли
-                   //if (User.IsInRole(PathManager.AdminRole))
-                   //{
-                       await _userManager.AddToRoleAsync(user, PathManager.AdminRole);
-                   //}
-                   //else
-                   //{
-                   //    await _userManager.AddToRoleAsync(user, PathManager.CustomerRole);
-                   //}
+                   if (User.IsInRole(PathManager.AdminRole))
+                   {
+                        await _userManager.AddToRoleAsync(user, PathManager.AdminRole);
+                   }
+                   else
+                   {
+                       await _userManager.AddToRoleAsync(user, PathManager.CustomerRole);
+                   }
 
                     _logger.LogInformation("User created a new account with password.");
 

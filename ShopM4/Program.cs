@@ -30,7 +30,6 @@ builder.Services
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddDefaultUI().AddDefaultTokenProviders()
     .AddEntityFrameworkStores<ApplicationDbContext>();
-
 builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 {
     googleOptions.ClientId = "240179620513-2d4nr5gvn1pva7nkmbler8g9mphifobn.apps.googleusercontent.com";
