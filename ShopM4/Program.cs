@@ -33,8 +33,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
 
 builder.Services.AddAuthentication().AddGoogle(googleOptions =>
 {
-    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
-    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    googleOptions.ClientId = "240179620513-2d4nr5gvn1pva7nkmbler8g9mphifobn.apps.googleusercontent.com";
+    googleOptions.ClientSecret = "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";
 });
 
 builder.Services.AddAuthentication().AddFacebook(options =>
@@ -117,5 +117,14 @@ app.UseSession(); // ��������� ������ ����
 //        return x.Response.WriteAsync("No");
 //    }
 //});
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
 
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    if (context.Database.GetPendingMigrations().Any())
+    {
+        context.Database.Migrate();
+    }
+}
 app.Run();
